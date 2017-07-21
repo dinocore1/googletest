@@ -91,21 +91,33 @@ cxx_library(gtest "${cxx_strict}" src/gtest-all.cc)
 cxx_library(gtest_main "${cxx_strict}" src/gtest_main.cc)
 target_link_libraries(gtest_main gtest)
 
-# If the CMake version supports it, attach header directory information
-# to the targets for when we are part of a parent build (ie being pulled
-# in via add_subdirectory() rather than being a standalone build).
-if (DEFINED CMAKE_VERSION AND NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.11")
-  target_include_directories(gtest      INTERFACE "${gtest_SOURCE_DIR}/include")
-  target_include_directories(gtest_main INTERFACE "${gtest_SOURCE_DIR}/include")
-endif()
+
+target_include_directories(gtest
+  PUBLIC $<BUILD_INTERFACE:${gtest_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+target_include_directories(gtest_main
+  PUBLIC $<BUILD_INTERFACE:${gtest_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 
 ########################################################################
 #
 # Install rules
 install(TARGETS gtest gtest_main
-  DESTINATION lib)
-install(DIRECTORY ${gtest_SOURCE_DIR}/include/gtest
-  DESTINATION include)
+  EXPORT gtestConfig
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib/static
+)
+
+install(DIRECTORY include/gtest
+  DESTINATION include
+)
+
+install(EXPORT gtestConfig
+  DESTINATION cmake
+)
 
 ########################################################################
 #

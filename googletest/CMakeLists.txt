@@ -107,8 +107,9 @@ target_include_directories(gtest_main
 # Install rules
 install(TARGETS gtest gtest_main
   EXPORT gtestConfig
+  RUNTIME DESTINATION lib
   LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib/static
+  ARCHIVE DESTINATION lib
 )
 
 install(DIRECTORY include/gtest
